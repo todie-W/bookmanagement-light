@@ -1,0 +1,50 @@
+{
+  "name": "wbs-node-ts-template",
+  "version": "1.0.0",
+  "description": "A modern, production-ready backend scaffold for TypeScript, Node and native ES modules.",
+  "keywords": [],
+  "license": "ISC",
+  "type": "module",
+  "main": "dist/app.js",
+  "imports": {
+    "#db": "./src/db/index.ts",
+    "#models": "./src/models/index.ts",
+    "#types": "./src/types/index.ts",
+    "#routes": "./src/routes/index.ts",
+    "#config": "./src/config/index.ts",
+    "#controllers": "./src/controllers/index.ts",
+    "#schemas": "./src/schemas/index.ts",
+    "#middleware": "./src/middleware/index.ts",
+    "#utils": {
+      "development": "./src/utils/index.ts",
+      "default": "./dist/utils/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "node --watch --conditions development --env-file=.env src/app.ts",
+    "prebuild": "rm -rf dist",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node --env-file=.env dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:local": "rm -fr dist && npm run build"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "body-parser": "^2.3.0",
+    "bootstrap": "^5.3.8",
+    "common": "^0.2.5",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "middleware": "^1.0.0",
+    "mongoose": "^9.10.3",
+    "routes": "^2.1.0",
+    "zod": "^4.6.5"
+  }
+}
