@@ -1,0 +1,452 @@
+[
+  {
+    "author": "Frank Herbert",
+    "title": "Dune",
+    "description": "A complex novel of politics, religion, and ecology set on the desert planet Arrakis.",
+    "pageNumber": 412,
+    "year": 1965,
+    "isbn": "9780441172719",
+    "genre": ["Science Fiction", "Adventure"]
+  },
+  {
+    "author": "J.K. Rowling",
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "description": "An orphaned boy discovers he is a wizard and attends a magical academy.",
+    "pageNumber": 309,
+    "year": 1997,
+    "isbn": "9780590353427",
+    "genre": ["Fantasy", "Young Adult"]
+  },
+  {
+    "author": "J.R.R. Tolkien",
+    "title": "The Hobbit",
+    "description": "A reluctant hobbit leaves his home to help a group of dwarves reclaim their mountain from a dragon.",
+    "pageNumber": 310,
+    "year": 1937,
+    "isbn": "9780547928227",
+    "genre": ["Fantasy", "Adventure"]
+  },
+  {
+    "author": "George Orwell",
+    "title": "1984",
+    "description": "A dystopian novel set in a totalitarian society under constant surveillance by Big Brother.",
+    "pageNumber": 328,
+    "year": 1949,
+    "isbn": "9780451524935",
+    "genre": ["Dystopian", "Science Fiction"]
+  },
+  {
+    "author": "Ray Bradbury",
+    "title": "Fahrenheit 451",
+    "description": "In a future where books are banned, a fireman tasked with burning them begins to question his life.",
+    "pageNumber": 194,
+    "year": 1953,
+    "isbn": "9781451673319",
+    "genre": ["Dystopian", "Science Fiction"]
+  },
+  {
+    "author": "Aldous Huxley",
+    "title": "Brave New World",
+    "description": "A dark vision of a future society driven by technological control, conditioning, and soma.",
+    "pageNumber": 268,
+    "year": 1932,
+    "isbn": "9780060850524",
+    "genre": ["Dystopian", "Science Fiction"]
+  },
+  {
+    "author": "Douglas Adams",
+    "title": "The Hitchhiker's Guide to the Galaxy",
+    "description": "An Earthman's comedic journey through space after Earth is demolished for a hyperspace bypass.",
+    "pageNumber": 193,
+    "year": 1979,
+    "isbn": "9780345391803",
+    "genre": ["Science Fiction", "Comedy"]
+  },
+  {
+    "author": "Isaac Asimov",
+    "title": "Foundation",
+    "description": "A mathematician develops psychohistory to predict and save humanity from a galactic dark age.",
+    "pageNumber": 255,
+    "year": 1951,
+    "isbn": "9780553293357",
+    "genre": ["Science Fiction"]
+  },
+  {
+    "author": "Orson Scott Card",
+    "title": "Ender's Game",
+    "description": "A gifted child is sent to an advanced military academy in space to prepare for an alien invasion.",
+    "pageNumber": 324,
+    "year": 1985,
+    "isbn": "9780812550702",
+    "genre": ["Science Fiction"]
+  },
+  {
+    "author": "William Gibson",
+    "title": "Neuromancer",
+    "description": "A washed-up computer hacker is hired by a mysterious employer for the ultimate hack.",
+    "pageNumber": 271,
+    "year": 1984,
+    "isbn": "9780441569595",
+    "genre": ["Cyberpunk", "Science Fiction"]
+  },
+  {
+    "author": "Harper Lee",
+    "title": "To Kill a Mockingbird",
+    "description": "A young girl in the depression-era South learns about racism and injustice through her lawyer father.",
+    "pageNumber": 281,
+    "year": 1960,
+    "isbn": "9780060935467",
+    "genre": ["Classic", "Historical Fiction"]
+  },
+  {
+    "author": "F. Scott Fitzgerald",
+    "title": "The Great Gatsby",
+    "description": "A tragic love story exploring the decadence and illusions of the Jazz Age in 1920s America.",
+    "pageNumber": 180,
+    "year": 1925,
+    "isbn": "9780743273565",
+    "genre": ["Classic", "Fiction"]
+  },
+  {
+    "author": "Jane Austen",
+    "title": "Pride and Prejudice",
+    "description": "A classic romance novel dealing with issues of class, marriage, and manners in early 19th-century England.",
+    "pageNumber": 279,
+    "year": 1813,
+    "isbn": "9780141439518",
+    "genre": ["Classic", "Romance"]
+  },
+  {
+    "author": "J.D. Salinger",
+    "title": "The Catcher in the Rye",
+    "description": "The experiences of an alienated teenager, Holden Caulfield, navigating post-WWII New York.",
+    "pageNumber": 277,
+    "year": 1951,
+    "isbn": "9780316769488",
+    "genre": ["Classic", "Fiction"]
+  },
+  {
+    "author": "Herman Melville",
+    "title": "Moby-Dick",
+    "description": "Captain Ahab's obsessive quest for revenge against the great white whale.",
+    "pageNumber": 635,
+    "year": 1851,
+    "isbn": "9780142437247",
+    "genre": ["Classic", "Adventure"]
+  },
+  {
+    "author": "Charlotte Brontë",
+    "title": "Jane Eyre",
+    "description": "The story of an orphan girl who overcomes her tragic upbringing to become an independent woman.",
+    "pageNumber": 500,
+    "year": 1847,
+    "isbn": "9780141441146",
+    "genre": ["Classic", "Romance"]
+  },
+  {
+    "author": "Emily Brontë",
+    "title": "Wuthering Heights",
+    "description": "A dark tale of love, passion, and revenge on the Yorkshire moors.",
+    "pageNumber": 416,
+    "year": 1847,
+    "isbn": "9780141439556",
+    "genre": ["Classic", "Romance"]
+  },
+  {
+    "author": "Fyodor Dostoevsky",
+    "title": "Crime and Punishment",
+    "description": "A poor ex-student in St. Petersburg murders a pawnbroker and wrestles with his ensuing guilt.",
+    "pageNumber": 671,
+    "year": 1866,
+    "isbn": "9780140449136",
+    "genre": ["Classic", "Philosophical Fiction"]
+  },
+  {
+    "author": "Fyodor Dostoevsky",
+    "title": "The Brothers Karamazov",
+    "description": "A complex philosophical novel exploring faith, free will, and morality through three brothers.",
+    "pageNumber": 796,
+    "year": 1880,
+    "isbn": "9780374528379",
+    "genre": ["Classic", "Philosophical Fiction"]
+  },
+  {
+    "author": "Miguel de Cervantes",
+    "title": "Don Quixote",
+    "description": "An aging nobleman loses his sanity and decides to become a knight-errant to revive chivalry.",
+    "pageNumber": 1077,
+    "year": 1605,
+    "isbn": "9780060934347",
+    "genre": ["Classic", "Adventure"]
+  },
+  {
+    "author": "Dan Brown",
+    "title": "The Da Vinci Code",
+    "description": "A symbologist investigates a murder in the Louvre, uncovering a massive religious conspiracy.",
+    "pageNumber": 489,
+    "year": 2003,
+    "isbn": "9780307474278",
+    "genre": ["Thriller", "Mystery"]
+  },
+  {
+    "author": "Gillian Flynn",
+    "title": "Gone Girl",
+    "description": "A psychological thriller surrounding the mysterious disappearance of a man's wife on their anniversary.",
+    "pageNumber": 415,
+    "year": 2012,
+    "isbn": "9780307588371",
+    "genre": ["Thriller", "Mystery"]
+  },
+  {
+    "author": "Stieg Larsson",
+    "title": "The Girl with the Dragon Tattoo",
+    "description": "A disgraced journalist and a brilliant hacker investigate a decades-old disappearance.",
+    "pageNumber": 465,
+    "year": 2005,
+    "isbn": "9780307454546",
+    "genre": ["Thriller", "Mystery"]
+  },
+  {
+    "author": "Paulo Coelho",
+    "title": "The Alchemist",
+    "description": "A young Andalusian shepherd travels to Egypt in search of a hidden treasure.",
+    "pageNumber": 163,
+    "year": 1988,
+    "isbn": "9780061122415",
+    "genre": ["Fiction", "Philosophical"]
+  },
+  {
+    "author": "Khaled Hosseini",
+    "title": "The Kite Runner",
+    "description": "The heartbreaking story of an unlikely friendship between a wealthy Afghan boy and the son of his father's servant.",
+    "pageNumber": 371,
+    "year": 2003,
+    "isbn": "9781594480003",
+    "genre": ["Historical Fiction", "Drama"]
+  },
+  {
+    "author": "Yann Martel",
+    "title": "Life of Pi",
+    "description": "A young boy survives a shipwreck and shares a lifeboat with a Bengal tiger.",
+    "pageNumber": 319,
+    "year": 2001,
+    "isbn": "9780156027328",
+    "genre": ["Fiction", "Adventure"]
+  },
+  {
+    "author": "Markus Zusak",
+    "title": "The Book Thief",
+    "description": "A story narrated by Death about a young girl living in Nazi Germany who steals books.",
+    "pageNumber": 552,
+    "year": 2005,
+    "isbn": "9780375842207",
+    "genre": ["Historical Fiction", "Drama"]
+  },
+  {
+    "author": "Fredrik Backman",
+    "title": "A Man Called Ove",
+    "description": "A curmudgeonly widower finds his life transformed by his new, chatty neighbors.",
+    "pageNumber": 353,
+    "year": 2012,
+    "isbn": "9781476738024",
+    "genre": ["Fiction", "Humor"]
+  },
+  {
+    "author": "Andy Weir",
+    "title": "The Martian",
+    "description": "An astronaut is stranded on Mars and must use his scientific knowledge to survive.",
+    "pageNumber": 369,
+    "year": 2011,
+    "isbn": "9780553418026",
+    "genre": ["Science Fiction", "Thriller"]
+  },
+  {
+    "author": "Cormac McCarthy",
+    "title": "The Road",
+    "description": "A father and son journey across a barren, post-apocalyptic landscape trying to survive.",
+    "pageNumber": 287,
+    "year": 2006,
+    "isbn": "9780307387899",
+    "genre": ["Post-Apocalyptic", "Fiction"]
+  },
+  {
+    "author": "Yuval Noah Harari",
+    "title": "Sapiens: A Brief History of Humankind",
+    "description": "An exploration of the history and evolution of the human species.",
+    "pageNumber": 443,
+    "year": 2011,
+    "isbn": "9780062316097",
+    "genre": ["History", "Non-Fiction"]
+  },
+  {
+    "author": "Tara Westover",
+    "title": "Educated",
+    "description": "A memoir about a woman who grows up in a survivalist family and eventually earns a PhD from Cambridge.",
+    "pageNumber": 334,
+    "year": 2018,
+    "isbn": "9780399590504",
+    "genre": ["Memoir", "Non-Fiction"]
+  },
+  {
+    "author": "Michelle Obama",
+    "title": "Becoming",
+    "description": "The deeply personal memoir of the former First Lady of the United States.",
+    "pageNumber": 426,
+    "year": 2018,
+    "isbn": "9781524763138",
+    "genre": ["Memoir", "Non-Fiction"]
+  },
+  {
+    "author": "Daniel Kahneman",
+    "title": "Thinking, Fast and Slow",
+    "description": "A psychological exploration of the two systems that drive the way humans think.",
+    "pageNumber": 499,
+    "year": 2011,
+    "isbn": "9780374533557",
+    "genre": ["Psychology", "Non-Fiction"]
+  },
+  {
+    "author": "James Clear",
+    "title": "Atomic Habits",
+    "description": "A practical guide to building good habits and breaking bad ones through small, incremental changes.",
+    "pageNumber": 320,
+    "year": 2018,
+    "isbn": "9780735211292",
+    "genre": ["Self-Help", "Non-Fiction"]
+  },
+  {
+    "author": "Charles Duhigg",
+    "title": "The Power of Habit",
+    "description": "An investigation into why habits exist and how they can be changed.",
+    "pageNumber": 371,
+    "year": 2012,
+    "isbn": "9780812981605",
+    "genre": ["Psychology", "Self-Help"]
+  },
+  {
+    "author": "Malcolm Gladwell",
+    "title": "Outliers",
+    "description": "An examination of the factors that contribute to high levels of success.",
+    "pageNumber": 309,
+    "year": 2008,
+    "isbn": "9780316017930",
+    "genre": ["Psychology", "Non-Fiction"]
+  },
+  {
+    "author": "Susan Cain",
+    "title": "Quiet",
+    "description": "A study of introverts and how society undervalues their contributions.",
+    "pageNumber": 333,
+    "year": 2012,
+    "isbn": "9780307352156",
+    "genre": ["Psychology", "Non-Fiction"]
+  },
+  {
+    "author": "Stephen Hawking",
+    "title": "A Brief History of Time",
+    "description": "A famous theoretical physicist attempts to explain the mysteries of the universe to non-scientists.",
+    "pageNumber": 212,
+    "year": 1988,
+    "isbn": "9780553380163",
+    "genre": ["Science", "Physics"]
+  },
+  {
+    "author": "Carl Sagan",
+    "title": "Cosmos",
+    "description": "A classic exploration of the universe, science, and human history.",
+    "pageNumber": 365,
+    "year": 1980,
+    "isbn": "9780345331359",
+    "genre": ["Science", "Astronomy"]
+  },
+  {
+    "author": "Patrick Rothfuss",
+    "title": "The Name of the Wind",
+    "description": "The autobiography of an adventurer and musician growing up to become a legend.",
+    "pageNumber": 662,
+    "year": 2007,
+    "isbn": "9780756404741",
+    "genre": ["Fantasy", "Adventure"]
+  },
+  {
+    "author": "George R.R. Martin",
+    "title": "A Game of Thrones",
+    "description": "Noble families fight for control of the Iron Throne in the continent of Westeros.",
+    "pageNumber": 694,
+    "year": 1996,
+    "isbn": "9780553103540",
+    "genre": ["Fantasy", "Drama"]
+  },
+  {
+    "author": "Terry Pratchett and Neil Gaiman",
+    "title": "Good Omens",
+    "description": "An angel and a demon team up to sabotage the impending apocalypse.",
+    "pageNumber": 412,
+    "year": 1990,
+    "isbn": "9780060853983",
+    "genre": ["Fantasy", "Comedy"]
+  },
+  {
+    "author": "Alice Walker",
+    "title": "The Color Purple",
+    "description": "The story of an African-American woman's life and struggles in the rural South in the early 20th century.",
+    "pageNumber": 295,
+    "year": 1982,
+    "isbn": "9780151191536",
+    "genre": ["Classic", "Historical Fiction"]
+  },
+  {
+    "author": "Toni Morrison",
+    "title": "Beloved",
+    "description": "A powerful novel about an escaped slave who is haunted by the spirit of the child she killed to save from slavery.",
+    "pageNumber": 324,
+    "year": 1987,
+    "isbn": "9781400033416",
+    "genre": ["Classic", "Historical Fiction"]
+  },
+  {
+    "author": "Margaret Atwood",
+    "title": "The Handmaid's Tale",
+    "description": "In a totalitarian, fundamentalist regime, women are subjugated and forced into reproductive roles.",
+    "pageNumber": 311,
+    "year": 1985,
+    "isbn": "9780385490818",
+    "genre": ["Dystopian", "Fiction"]
+  },
+  {
+    "author": "Joseph Heller",
+    "title": "Catch-22",
+    "description": "A satirical novel about the absurdities of military life and war during World War II.",
+    "pageNumber": 453,
+    "year": 1961,
+    "isbn": "9780684833392",
+    "genre": ["Satire", "Historical Fiction"]
+  },
+  {
+    "author": "Kurt Vonnegut",
+    "title": "Slaughterhouse-Five",
+    "description": "An anti-war sci-fi novel tracking the life of Billy Pilgrim, a man unstuck in time.",
+    "pageNumber": 275,
+    "year": 1969,
+    "isbn": "9780385333849",
+    "genre": ["Science Fiction", "Satire"]
+  },
+  {
+    "author": "George Orwell",
+    "title": "Animal Farm",
+    "description": "A group of farm animals overthrow their human farmer, only to form a new tyranny.",
+    "pageNumber": 112,
+    "year": 1945,
+    "isbn": "9780451526342",
+    "genre": ["Satire", "Dystopian"]
+  },
+  {
+    "author": "William Golding",
+    "title": "Lord of the Flies",
+    "description": "Schoolboys stranded on a deserted island descend into savagery and primitive behavior.",
+    "pageNumber": 224,
+    "year": 1954,
+    "isbn": "9780399501487",
+    "genre": ["Classic", "Psychological Fiction"]
+  }
+]

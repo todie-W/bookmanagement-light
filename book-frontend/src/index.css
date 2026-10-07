@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+/* stylelint-disable at-rule-no-unknown -- Tailwind CSS plugin directive */
+@plugin "daisyui";
+/* stylelint-enable at-rule-no-unknown */
+
+html {
+  scrollbar-gutter: stable both-edges;
+}
+
+.bottom-right {
+  top: unset;
+  bottom: 0;
+}
+
+.enter-bottom {
+  animation: enter-bottom 750ms cubic-bezier(0.53, 1.02, 0.76, 1.07) forwards;
+}
+
+.leave {
+  animation: leave-top 500ms cubic-bezier(0.53, 1.02, 0.76, 1.07) forwards, shrink 250ms forwards;
+}
+.leave-bottom {
+  animation: leave-bottom 500ms cubic-bezier(0.53, 1.02, 0.76, 1.07) forwards, shrink 250ms forwards;
+}
+
+.book-cover-frame {
+  height: 18rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: var(--color-slate-50);
+}
+
+.book-cover {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 1rem;
+}
+/*  object-fit: contain; und  border-radius: 1rem; -> dass das Bild seine eigenen Proportionen behält und auf maximal die Rahmengröße begrenzt wir */
+
+@keyframes enter-top {
+  from {
+    top: -100vh;
+  }
+  to {
+    top: 0vh;
+  }
+}
+@keyframes leave-top {
+  to {
+    top: -100vh;
+  }
+  from {
+    top: 0vh;
+  }
+}
+@keyframes enter-bottom {
+  from {
+    top: 100vh;
+  }
+  to {
+    top: 0vh;
+  }
+}
+@keyframes leave-bottom {
+  to {
+    top: 100vh;
+  }
+  from {
+    top: 0vh;
+  }
+}
+@keyframes shrink {
+  to {
+    height: 0px;
+    padding: 0;
+    margin-block: 0;
+  }
+}

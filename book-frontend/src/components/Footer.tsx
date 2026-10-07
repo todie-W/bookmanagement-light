@@ -1,10 +1,10 @@
 const Footer = () => {
   return (
-    <footer className="footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4">
-      <aside className="grid-flow-col items-center"></aside>
-
-       <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
-        </footer>
+    <footer className="border-t border-slate-200 bg-white">
+      <p className="mx-auto max-w-6xl px-4 py-5 text-center text-sm text-slate-500 sm:px-6">
+        © {new Date().getFullYear()} Buchverwaltung
+      </p>
+    </footer>
   );
 };
 

@@ -2,10 +2,12 @@ import { z } from "zod";
 
 const envSchema = z.object({
   MONGO_URI: z.string(),
+  DB_NAME: z.string().default('bookstore'),
   CLIENT_BASE_URL: z.url().default('http://localhost:5173'),
   PORT: z.coerce.number().int().default(3000)
 });
-
+// CLIENT_BASE_URL: z.string().url().default('http://localhost:5173'), erlaubt Zugriff vom Frontend auf das Backend;
+// dieser Wert kann auch in der .env festgelegt werden, z.B. für die Produktion, wenn das Frontend auf einem anderen Server liegt.
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
@@ -16,7 +18,7 @@ if (!parsedEnv.success) {
 export const {
   //ACCESS_JWT_SECRET,
  // ACCESS_TOKEN_TTL,
- // DB_NAME,
+  DB_NAME,
   CLIENT_BASE_URL,
   MONGO_URI,
 //   REFRESH_TOKEN_TTL,

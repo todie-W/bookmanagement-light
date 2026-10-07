@@ -7,7 +7,7 @@ const originalFetch = window.fetch;
 // ohne dass einzelne Komponenten oder Services etwas ändern müssen.
 window.fetch = async (url, options, ...rest) => {
   // Schritt 1: Request ganz normal ausführen.
-  let res = await originalFetch(url, { ...options }, ...rest);
+  const res = await originalFetch(url, { ...options }, ...rest);
 
   // Schritt 2: Antwort-Header prüfen.
   // Der WWW-Authenticate-Header wurde von unserer authenticate-Middleware gesetzt,

@@ -6,3 +6,8 @@ export interface OrderType {
 		quantity: number;
 	}>;
 }
+export type UserType = {
+  name: string;
+  email: string;
+  password: string;
+};

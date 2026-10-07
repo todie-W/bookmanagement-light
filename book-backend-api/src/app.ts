@@ -9,7 +9,7 @@ const app = express();
 app.use(
   cors({
    
-    origin: CLIENT_BASE_URL, // aus der env
+    origin: CLIENT_BASE_URL, // aus der config/index.ts Datei, damit man es nicht hardcoded hat
    
   }),
 );

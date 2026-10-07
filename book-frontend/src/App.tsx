@@ -3,7 +3,9 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Books from "./pages/Books";
 import ReadingList from "./pages/ReadingList";
+import AddBook from "./pages/AddBook";
 import "./utils/index";
+import ChangeBook from "./pages/ChangeBook";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path="books" element={<Books />} />
           <Route path="reading-list" element={<ReadingList />} />
+          <Route path="add-book" element={<AddBook />} />
+          <Route path="change-book" element={<ChangeBook />} />
 
         <Route path="*" element={<h1>Page not found</h1>} />
       </Route>
