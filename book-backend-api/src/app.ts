@@ -15,6 +15,15 @@ app.use(
 );
 app.use(express.json()); //cookieParser() erstmal nicht
 
+app.get("/", (_req, res) => {
+  res.json({
+    message: "Book API is running",
+    endpoints: {
+      books: "/books",
+    },
+  });
+});
+
 app.use("/books", bookRoutes);
 
 // Start the server, wird aber in src/config/index.ts konfiguriert, damit man es nicht hardcoded hat
