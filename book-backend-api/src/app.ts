@@ -8,9 +8,7 @@ const app = express();
 
 app.use(
   cors({
-   
-    origin: CLIENT_BASE_URL, // aus der config/index.ts Datei, damit man es nicht hardcoded hat
-   
+    origin: [CLIENT_BASE_URL, 'http://localhost:5173'],
   }),
 );
 app.use(express.json()); //cookieParser() erstmal nicht

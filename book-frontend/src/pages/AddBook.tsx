@@ -1,4 +1,5 @@
 import React, { useState, type ChangeEvent, type FormEvent } from 'react';
+import { BOOKS_API_URL } from '../utils/api';
 
 type BookFormData = {
   author: string;  
@@ -45,7 +46,7 @@ export const BookForm: React.FC = () => {
     try {
         //localhost:5173/books, der Client oder localhost:3000/books als Backend-URL
       const payload = { ...formData, genre: [formData.genre] };
-      const response = await fetch('http://localhost:3000/books', {
+      const response = await fetch(BOOKS_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

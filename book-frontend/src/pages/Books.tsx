@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import SearchBook from './SearchBook';
 import type { Book } from '../types/Book';
 import { getReadingList, toggleBookInReadingList } from '../utils/readingList';
+import { BOOKS_API_URL } from '../utils/api';
 
 const BOOKS_PER_PAGE = 9;
 
@@ -21,7 +22,7 @@ const Books = () => {
         let currentPage = 1;
 
         while (true) {
-          const res = await fetch(`/api/books?page=${currentPage}&limit=${BOOKS_PER_PAGE}`);
+          const res = await fetch(`${BOOKS_API_URL}?page=${currentPage}&limit=${BOOKS_PER_PAGE}`);
           const { data, message } = (await res.json()) as {
             data?: Book[];
             message?: string;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, type SubmitEvent } from 'react';
+import { BOOKS_API_URL } from '../utils/api';
 //IBook?   Buchauswahl, die in der DB geändert werden soll, ausführen. Die Buchliste wird aus der DB geladen und in der linken Spalte angezeigt. In der rechten Spalte kann das ausgewählte Buch geändert werden.
 interface IBook {
   _id?: string;
@@ -31,7 +32,7 @@ export default function BookApp() {
   });
   const [message, setMessage] = useState<string>('');
 
-  const API_URL = 'http://localhost:3000/books';
+  const API_URL = BOOKS_API_URL;
 
 
   const fetchBooks = async (): Promise<IBook[]> => {

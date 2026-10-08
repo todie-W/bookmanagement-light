@@ -3,7 +3,7 @@ import { z } from "zod";
 const envSchema = z.object({
   MONGO_URI: z.string(),
   DB_NAME: z.string().default('bookstore'),
-  CLIENT_BASE_URL: z.url().default('http://localhost:5173'),
+  CLIENT_BASE_URL: z.url().default('https://book-management-0rrv.onrender.com'),
   PORT: z.coerce.number().int().default(3000)
 });
 // CLIENT_BASE_URL: z.string().url().default('http://localhost:5173'), erlaubt Zugriff vom Frontend auf das Backend;

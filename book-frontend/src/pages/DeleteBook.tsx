@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { Book } from '../types/Book';
 import { getReadingList } from '../utils/readingList';
+import { BOOKS_API_URL } from '../utils/api';
 
-const API_URL = '/api/books';
+const API_URL = BOOKS_API_URL;
 
 export default function DeleteBook() {
   const [books, setBooks] = useState<Book[]>([]);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Book } from "../types/Book";
+import { BOOKS_API_URL } from "../utils/api";
 
 type BookStatus = "buy" | "borrow";
 type ReadingListBook = Book & { status: BookStatus };
@@ -46,7 +47,7 @@ const ReadingList = () => {
 
         const currentBooks = await Promise.all(
           storedBooks.map(async (book) => {
-            const response = await fetch(`/api/books/${encodeURIComponent(book._id)}`);//aktualisiert damit den angezeigten Zustand
+            const response = await fetch(`${BOOKS_API_URL}/${encodeURIComponent(book._id)}`);//aktualisiert damit den angezeigten Zustand
             if (!response.ok) {
               throw new Error(`Buch ${book._id} konnte nicht geladen werden (HTTP ${response.status}).`);
             }
