@@ -14,6 +14,7 @@ const Navbar = () => {
             { to: '/books', label: 'Bücher' },
             { to: '/reading-list', label: 'Merkliste' },
             { to: '/change-book', label: 'Buch ändern' },
+            { to: '/delete-book', label: 'Buch löschen' },
           ].map(({ to, label }) => (
             <NavLink
               key={to}

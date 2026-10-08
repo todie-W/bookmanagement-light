@@ -6,6 +6,7 @@ import ReadingList from "./pages/ReadingList";
 import AddBook from "./pages/AddBook";
 import "./utils/index";
 import ChangeBook from "./pages/ChangeBook";
+import DeleteBook from "./pages/DeleteBook";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="reading-list" element={<ReadingList />} />
           <Route path="add-book" element={<AddBook />} />
           <Route path="change-book" element={<ChangeBook />} />
+          <Route path="delete-book" element={<DeleteBook />} />
 
         <Route path="*" element={<h1>Page not found</h1>} />
       </Route>

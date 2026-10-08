@@ -61,8 +61,11 @@ export const BookForm: React.FC = () => {
 
       setMessage({ text: `Buch "${data.title}" erfolgreich hinzugefügt!`, isError: false });
       setFormData(initialFormState); // Formular zurücksetzen
-    } catch (error: any) {
-      setMessage({ text: error.message || 'Fehler beim Verbinden mit dem Server.', isError: true });
+    } catch (error) {
+      setMessage({
+        text: error instanceof Error ? error.message : 'Fehler beim Verbinden mit dem Server.',
+        isError: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -181,6 +184,9 @@ export const BookForm: React.FC = () => {
             <option value="Science Fiction">Science Fiction</option>
             <option value="Romance">Romance</option>
             <option value="Thriller">Thriller</option>
+            <option value="Kinderbuch">Kinderbuch</option>
+            <option value="Roman">Roman</option>
+            <option value="Drama">Drama</option>
           </select>
         </div>
 

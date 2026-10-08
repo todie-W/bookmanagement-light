@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Book } from "../types/Book";
 
-type BookStatus = "read" | "pending";
+type BookStatus = "buy" | "borrow";
 type ReadingListBook = Book & { status: BookStatus };
 
 const isStoredBook = (value: unknown): value is Book =>
@@ -21,7 +21,7 @@ const normalizeStoredBooks = (value: unknown): ReadingListBook[] => {
 
   return value.map((book) => ({
     ...book,
-    status: book.status === "read" ? "read" : "pending",
+    status: book.status === "borrow" ? "borrow" : "buy",
   }));
 };
 
@@ -81,10 +81,10 @@ const ReadingList = () => {
   }, []);
 
   const handleStatusChange = (bookId: string, status: string) => {
-    if (status !== "read" && status !== "pending") {
-      const statusError = new Error(`Unbekannter Lesestatus: ${status}`);
+    if (status !== "buy" && status !== "borrow") {
+      const statusError = new Error(`Unbekannter Beschaffungsstatus: ${status}`);
       console.error("Lesestatus konnte nicht gespeichert werden:", statusError);
-      setError("Der ausgewählte Lesestatus ist ungültig.");
+      setError("Die ausgewählte Option ist ungültig.");
       return;
     }
 
@@ -98,8 +98,8 @@ const ReadingList = () => {
       setError(null);
       window.dispatchEvent(new Event("readingListUpdated"));
     } catch (saveError) {
-      console.error("Lesestatus konnte nicht gespeichert werden:", saveError);
-      setError("Der Lesestatus konnte nicht gespeichert werden.");
+      console.error("Beschaffungsoption konnte nicht gespeichert werden:", saveError);
+      setError("Die ausgewählte Option konnte nicht gespeichert werden.");
     }
   };
 
@@ -123,7 +123,7 @@ const ReadingList = () => {
             <article key={book._id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600">
-                  {book.status === "read" ? "Gelesen" : "Noch nicht gelesen"}
+                  {book.status === "buy" ? "Kaufen" : "Leihen"}
                 </p>
                 <h2 className="mt-2 text-lg font-bold text-slate-900">{book.title}</h2>
                 <p className="mt-1 text-sm font-medium text-slate-500">{book.author}</p>
@@ -131,14 +131,14 @@ const ReadingList = () => {
                 <div className="mt-5">
                   <select
                     value={book.status}
-                    aria-label={`Lesestatus für ${book.title}`}
+                    aria-label={`Option für ${book.title}`}
                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                     onChange={(event) =>
                       handleStatusChange(book._id, event.target.value)
                     }
                   >
-                    <option value="pending">Noch nicht gelesen</option>
-                    <option value="read">Gelesen</option>
+                    <option value="buy">Kaufen</option>
+                    <option value="borrow">Leihen</option>
                   </select>
                 </div>
               </div>

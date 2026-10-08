@@ -3,6 +3,8 @@ import SearchBook from './SearchBook';
 import type { Book } from '../types/Book';
 import { getReadingList, toggleBookInReadingList } from '../utils/readingList';
 
+const BOOKS_PER_PAGE = 9;
+
 const Books = () => {
   const [books, setBooks] = useState<Book[] | null>(null);
   const [page, setPage] = useState(1);
@@ -12,30 +14,61 @@ const Books = () => {
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    let isActive = true;
+    const fetchAllBooks = async () => {
       try {
-        const res = await fetch(`/api/books?page=${page}&limit=3`);
-        const { data, message } = (await res.json()) as {
-          data?: Book[];
-          message?: string;
-        };
-        if (!res.ok) {
-          throw new Error(message ?? `Bücher konnten nicht geladen werden (HTTP ${res.status}).`);
+        const allBooks: Book[] = [];
+        let currentPage = 1;
+
+        while (true) {
+          const res = await fetch(`/api/books?page=${currentPage}&limit=${BOOKS_PER_PAGE}`);
+          const { data, message } = (await res.json()) as {
+            data?: Book[];
+            message?: string;
+          };
+          if (!res.ok) {
+            throw new Error(message ?? `Bücher konnten nicht geladen werden (HTTP ${res.status}).`);
+          }
+          if (!Array.isArray(data)) {
+            throw new Error('Die Buchliste wurde in einem ungültigen Format zurückgegeben.');
+          }
+          allBooks.push(...data);
+          if (data.length < BOOKS_PER_PAGE) break;
+          currentPage += 1;
         }
-        if (!Array.isArray(data)) {
-          throw new Error('Die Buchliste wurde in einem ungültigen Format zurückgegeben.');
+
+        if (isActive) {
+          setBooks(allBooks);
+          setBookLoadError(null);
         }
-        setBooks(data);
-        setBookLoadError(null);
       } catch (error) {
         console.error('Bücher konnten nicht geladen werden:', error);
-        setBooks([]);
-        setBookLoadError('Die Bücher konnten nicht geladen werden. Bitte versuche es später erneut.');
+        if (isActive) {
+          setBooks([]);
+          setBookLoadError('Die Bücher konnten nicht geladen werden. Bitte versuche es später erneut.');
+        }
       }
     };
 
-    fetchBooks();
-  }, [page]);
+    void fetchAllBooks();
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const pageCount = Math.max(1, Math.ceil((books?.length ?? 0) / BOOKS_PER_PAGE));
+  const visibleBooks = books?.slice((page - 1) * BOOKS_PER_PAGE, page * BOOKS_PER_PAGE) ?? [];
+
+  useEffect(() => {
+    if (!selectedBookId) return;
+    const animationFrame = requestAnimationFrame(() => {
+      document.getElementById(`book-${selectedBookId}`)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    });
+    return () => cancelAnimationFrame(animationFrame);
+  }, [page, selectedBookId]);
 
   useEffect(() => {
     const syncReadingList = () => {
@@ -68,13 +101,11 @@ const Books = () => {
   };
 
   const handleSelectBook = (book: Book) => {
-    setSelectedBookId(book._id);
-    requestAnimationFrame(() => {
-      document.getElementById(`book-${book._id}`)?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-    });
+    const bookIndex = books?.findIndex((item) => item._id === book._id) ?? -1;
+    if (bookIndex >= 0) {
+      setPage(Math.floor(bookIndex / BOOKS_PER_PAGE) + 1);
+      setSelectedBookId(book._id);
+    }
   };
 
   return (
@@ -94,20 +125,22 @@ const Books = () => {
           onToggleBook={handleToggleBook}
         />
         <div className="flex items-center gap-3">
-          <span className="text-sm text-slate-500">Seite {page}</span>
+          <span className="text-sm text-slate-500">Seite {page} von {pageCount}</span>
           <button
             type="button"
             aria-label="Vorherige Seite"
-            onClick={() => setPage((prev) => (prev === 1 ? 7 : prev - 1))}
+            onClick={() => setPage((prev) => (prev === 1 ? pageCount : prev - 1))}
             className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100"
+            disabled={pageCount <= 1}
           >
             ‹
           </button>
           <button
             type="button"
             aria-label="Nächste Seite"
-            onClick={() => setPage((prev) => (prev === 7 ? 1 : prev + 1))}
-            className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100"
+            onClick={() => setPage((prev) => (prev === pageCount ? 1 : prev + 1))}
+            className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={pageCount <= 1}
           >
             ›
           </button>
@@ -124,7 +157,7 @@ const Books = () => {
         </p>
       )}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {books?.map((book) => (
+        {visibleBooks.map((book) => (
           <article
             id={`book-${book._id}`}
             key={book._id}

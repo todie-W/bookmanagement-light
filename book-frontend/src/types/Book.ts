@@ -8,5 +8,5 @@ export interface Book {
   pageNumber?: number;
   year?: number;
   genre?: string;
-  status?: "read" | "pending";
+  status?: "buy" | "borrow";
 }

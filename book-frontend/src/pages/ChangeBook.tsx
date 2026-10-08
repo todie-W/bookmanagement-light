@@ -4,19 +4,25 @@ interface IBook {
   _id?: string;
   author: string;
   title: string;
+  description?: string;
   pageNumber: number;
   year: number;
   isbn?: string;
-  genre: string;
-  description?: string;
+  genre: string | string[];
 }
+
+type BookFormData = Omit<IBook, 'genre'> & {
+  genre: string;
+}
+
+const BOOKS_PER_PAGE = 100;
 
 export default function BookApp() {
   const [books, setBooks] = useState<IBook[]>([]);
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<IBook>({
-    title: '',
+  const [formData, setFormData] = useState<BookFormData>({
     author: '',
+    title: '',
     description: '',
     pageNumber: 0,
     year: new Date().getFullYear(),
@@ -28,24 +34,49 @@ export default function BookApp() {
   const API_URL = 'http://localhost:3000/books';
 
 
-  const fetchBooks = async () => {
-    try {
-      const res = await fetch(API_URL);
+  const fetchBooks = async (): Promise<IBook[]> => {
+    const allBooks: IBook[] = [];
+    let page = 1;
+
+    while (true) {
+      const res = await fetch(`${API_URL}?page=${page}&limit=${BOOKS_PER_PAGE}`);
       if (!res.ok) {
         throw new Error(`Bücher konnten nicht geladen werden (HTTP ${res.status}).`);
       }
-      const result: { data: IBook[] } = await res.json();
-      setBooks(result.data);
-    } catch (err) {
-      console.error('Fehler beim Abrufen der Bücher:', err);
-      setMessage('Bücher konnten nicht geladen werden. Bitte prüfe die Verbindung zum Server.');
+
+      const result: { data?: IBook[] } = await res.json();
+      if (!Array.isArray(result.data)) {
+        throw new Error('Die Buchliste wurde in einem ungültigen Format zurückgegeben.');
+      }
+
+      allBooks.push(...result.data);
+      if (result.data.length < BOOKS_PER_PAGE) {
+        return allBooks;
+      }
+      page += 1;
     }
   };
 
 
   // Bücher beim Start laden
   useEffect(() => {
-    fetchBooks();
+    let isActive = true;
+    const loadBooks = async () => {
+      try {
+        const loadedBooks = await fetchBooks();
+        if (isActive) setBooks(loadedBooks);
+      } catch (err) {
+        console.error('Fehler beim Abrufen der Bücher:', err);
+        if (isActive) {
+          setMessage('Bücher konnten nicht geladen werden. Bitte prüfe die Verbindung zum Server.');
+        }
+      }
+    };
+
+    void loadBooks();
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   // Buch auswählen über Checkbox / Häkchen
@@ -63,13 +94,13 @@ export default function BookApp() {
         pageNumber: book.pageNumber || 1,
         year: book.year || new Date().getFullYear(),
         isbn: book.isbn || '',
-        genre: book.genre || ''
+        genre: Array.isArray(book.genre) ? book.genre.join(', ') : book.genre || ''
       });
     }
   };
 
   // Formular-Eingaben verarbeiten
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -100,7 +131,10 @@ export default function BookApp() {
       const response = await fetch(`${API_URL}/${selectedBookId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          genre: formData.genre.split(',').map((genre) => genre.trim()).filter(Boolean),
+        })
       });
 
       if (response.ok) {
@@ -110,7 +144,14 @@ export default function BookApp() {
             throw new Error('Die gespeicherte Reading List hat ein ungültiges Format.');
           }
           const updatedReadingList = readingList.map(book =>
-            book._id === selectedBookId ? { ...book, ...formData, _id: selectedBookId } : book
+            book._id === selectedBookId
+              ? {
+                  ...book,
+                  ...formData,
+                  genre: formData.genre.split(',').map((genre) => genre.trim()).filter(Boolean),
+                  _id: selectedBookId,
+                }
+              : book
           );
           localStorage.setItem('readingList', JSON.stringify(updatedReadingList));
           window.dispatchEvent(new Event('readingListUpdated'));
@@ -119,7 +160,12 @@ export default function BookApp() {
           console.error('Reading List konnte nicht synchronisiert werden:', error);
           setMessage('Buch wurde gespeichert, aber die Reading List konnte nicht synchronisiert werden.');
         }
-        fetchBooks(); // Liste neu laden
+        try {
+          setBooks(await fetchBooks());
+        } catch (error) {
+          console.error('Bücherliste konnte nach dem Aktualisieren nicht neu geladen werden:', error);
+          setMessage('Buch wurde aktualisiert, aber die Bücherliste konnte nicht neu geladen werden.');
+        }
       } else {
         setMessage('Fehler beim Aktualisieren des Buches.');
       }
@@ -180,6 +226,9 @@ export default function BookApp() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+
+  
+
           <div>
             <label className="block text-sm font-medium text-slate-700">Buchtitel</label>
             <input
@@ -193,8 +242,8 @@ export default function BookApp() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700">Autor</label>
+           <div>
+            <label className="block text-sm font-medium text-slate-700">Buchtitel</label>
             <input
               type="text"
               name="author"
@@ -205,13 +254,27 @@ export default function BookApp() {
               required
             />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-slate-700">ISBN</label>
+            <label htmlFor="description" className="block text-sm font-medium text-slate-700">
+              Beschreibung
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description ?? ''}
+              onChange={handleInputChange}
+              disabled={!selectedBookId}
+              rows={4}
+              className="mt-1 block w-full resize-y rounded-xl border border-slate-300 p-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 disabled:bg-slate-100"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-700">Erscheinungsjahr</label>
             <input
-              type="text"
-              name="isbn"
-              value={formData.isbn}
+              type="number"
+              name="pageNumber"
+              value={formData.pageNumber}
               onChange={handleInputChange}
               disabled={!selectedBookId}
               className="mt-1 block w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 disabled:bg-slate-100"
@@ -228,6 +291,43 @@ export default function BookApp() {
               disabled={!selectedBookId}
               className="mt-1 block w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 disabled:bg-slate-100"
             />
+          </div>
+
+           <div>
+            <label className="block text-sm font-medium text-slate-700">ISBN</label>
+            <input
+              type="text"
+              name="isbn"
+              value={formData.isbn}
+              onChange={handleInputChange}
+              disabled={!selectedBookId}
+              className="mt-1 block w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 disabled:bg-slate-100"
+            />
+          </div>
+          <div>
+            <label htmlFor="genre" className="block text-sm font-medium text-slate-700">
+              Genre
+            </label>
+            <input
+              id="genre"
+              type="text"
+              name="genre"
+              value={formData.genre}
+              onChange={handleInputChange}
+              disabled={!selectedBookId}
+              placeholder="z. B. Fantasy, Roman"
+              list="change-book-genre-options"
+              className="mt-1 block w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 disabled:bg-slate-100"
+            />
+            <datalist id="change-book-genre-options">
+            <option value="Fantasy">Fantasy</option>
+            <option value="Science Fiction">Science Fiction</option>
+            <option value="Romance">Romance</option>
+              <option value="Kinderbuch" />
+              <option value="Roman" />
+              <option value="Drama" />
+            </datalist>
+            <p className="mt-1 text-xs text-slate-500">Mehrere Genres mit Komma trennen.</p>
           </div>
 
           <button

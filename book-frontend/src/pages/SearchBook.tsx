@@ -43,7 +43,7 @@ export default function SearchBook({
   return (
     <div ref={menuRef} className="relative w-full max-w-sm">
       <label htmlFor="book-search" className="mb-2 block text-sm font-semibold text-slate-700">
-        Bücher auf dieser Seite suchen
+        Suche nach Bücher
       </label>
       <div className="relative">
         <input
@@ -128,7 +128,7 @@ export default function SearchBook({
             })
           ) : (
             <p className="p-4 text-center text-sm text-slate-500">
-              Keine Bücher auf dieser Seite gefunden.
+              Keine passenden Bücher gefunden.
             </p>
           )}
         </div>
