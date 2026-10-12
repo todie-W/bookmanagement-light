@@ -31,8 +31,8 @@ export default function BookApp() {
   });
   const [message, setMessage] = useState<string>('');
 
-  const API_URL = 'http://localhost:3000/books';
-
+ // const API_URL = 'http://localhost:3000/books';
+  const API_URL = '/api/books';
 
   const fetchBooks = async (): Promise<IBook[]> => {
     const allBooks: IBook[] = [];

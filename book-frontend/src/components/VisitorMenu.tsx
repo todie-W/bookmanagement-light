@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-
+const API_URL = '/api/books';
 
 const UserMenu = () => {
  // const { logout, user } = useContext(AuthContext)!;
@@ -23,7 +23,7 @@ const UserMenu = () => {
             <div className="w-10 rounded-full">
               <img
                 // alt="Tailwind CSS Navbar component"
-                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+               
               />
             </div>
           </div>
@@ -46,7 +46,8 @@ const UserMenu = () => {
                 <Link to={'/reading-list'}>Reading List</Link>
               </li>
               <li>
-                <Link to={'http://localhost:5173/add-book'}>Buch hinzufügen</Link>
+                {/* <Link to={'http://localhost:5173/add-book'}>Buch hinzufügen</Link> */}
+                <Link to={API_URL}>Buch hinzufügen</Link>
               </li>
               {/* )}; */}
             {/* <li>
