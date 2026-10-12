@@ -7,27 +7,50 @@
   "type": "module",
   "main": "dist/app.js",
   "imports": {
-    "#db": "./src/db/index.ts",
-    "#models": "./src/models/index.ts",
-    "#types": "./src/types/index.ts",
-    "#routes": "./src/routes/index.ts",
-    "#config": "./src/config/index.ts",
-    "#controllers": "./src/controllers/index.ts",
-    "#schemas": "./src/schemas/index.ts",
-    "#middleware": "./src/middleware/index.ts",
+    "#db": {
+      "development": "./src/db/index.ts",
+      "default": "./dist/db/index.js"
+    },
+    "#models": {
+      "development": "./src/models/index.ts",
+      "default": "./dist/models/index.js"
+    },
+    "#types": {
+      "development": "./src/types/index.ts",
+      "default": "./dist/types/index.js"
+    },
+    "#routes": {
+      "development": "./src/routes/index.ts",
+      "default": "./dist/routes/index.js"
+    },
+    "#config": {
+      "development": "./src/config/index.ts",
+      "default": "./dist/config/index.js"
+    },
+    "#controllers": {
+      "development": "./src/controllers/index.ts",
+      "default": "./dist/controllers/index.js"
+    },
+    "#schemas": {
+      "development": "./src/schemas/index.ts",
+      "default": "./dist/schemas/index.js"
+    },
+    "#middleware": {
+      "development": "./src/middleware/index.ts",
+      "default": "./dist/middleware/index.js"
+    },
     "#utils": {
       "development": "./src/utils/index.ts",
       "default": "./dist/utils/index.js"
     }
   },
   "scripts": {
-    "dev": "node --watch --conditions development --env-file=.env src/app.ts",
-    "prebuild": "rm -rf dist",
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node --env-file=.env dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:local": "rm -fr dist && npm run build"
+   "dev": "node --watch --conditions development --env-file=.env src/app.ts",
+  "prebuild": "rm -rf dist",
+  "build": "tsc",
+  "start": "node dist/app.js",
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "build:local": "rm -fr dist && npm run build"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
