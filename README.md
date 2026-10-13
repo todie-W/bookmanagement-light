@@ -3,6 +3,11 @@
 ## Beschreibung
 Ein Eigennutz ist der Anlass dieser Web-Applikation. Mit oder ohne Interessenten. Bücher werden in einer Sammelliste dem Betrachter zur Verfügung gestellt. In einer Merkliste werden sie verwaltet: in Gruppen aufgeteilt, als Verkauft oder Verliehen gekennzeichnet, zur Änderung und zum Löschen weitergereicht werden.
 
+Die .envi Variable ist MONGO_URI.
+
+Backend: http://localhost:3000/
+Frontend: http://localhost:5173/
+
 
 Die Datenstruktur der benötigten Tabelle "books" in der Datenbank (hier: bookstore):
 
@@ -20,12 +25,9 @@ Die Datenstruktur der benötigten Tabelle "books" in der Datenbank (hier: bookst
   ],
   __v: NumberInt('0')
 }
-...
 
-Die .envi Variable ist MONGO_URI.
 
-Backend: http://localhost:3000
-Frontend: http://localhost:5173/
+
 
 Beim Einrichten in Kosole jeweils fürs Backend und Frontend:
 npm i
