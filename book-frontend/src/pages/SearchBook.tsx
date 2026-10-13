@@ -25,7 +25,10 @@ export default function SearchBook({
     return books.filter(
       (book) =>
         book.title.toLocaleLowerCase().includes(query) ||
-        book.author.toLocaleLowerCase().includes(query),
+        book.author.toLocaleLowerCase().includes(query) ||
+        (Array.isArray(book.genre) ? book.genre : [book.genre ?? ""]).some((genre) =>
+          genre.toLocaleLowerCase().includes(query),
+        ),
     );
   }, [books, searchQuery]);
 
@@ -49,7 +52,7 @@ export default function SearchBook({
         <input
           id="book-search"
           type="search"
-          placeholder="Titel oder Autor eingeben..."
+          placeholder="Titel, Autor oder Genre eingeben..."
           value={searchQuery}
           onChange={(event) => {
             setSearchQuery(event.target.value);

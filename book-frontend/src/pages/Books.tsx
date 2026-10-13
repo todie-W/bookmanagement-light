@@ -15,6 +15,7 @@ const Books = () => {
   const [page, setPage] = useState(1);
   const [bookLoadError, setBookLoadError] = useState<string | null>(null);
   const [savedBookIds, setSavedBookIds] = useState<string[]>([]);
+  const [readingListStatuses, setReadingListStatuses] = useState<Record<string, 'available' | 'buy' | 'borrow'>>({});
   const [readingListError, setReadingListError] = useState<string | null>(null);
   const [readingListGroups, setReadingListGroups] = useState<ReadingListGroup[]>([]);
   const [groupsError, setGroupsError] = useState<string | null>(null);
@@ -80,7 +81,16 @@ const Books = () => {
   useEffect(() => {
     const syncReadingList = () => {
       try {
-        setSavedBookIds(getReadingList().map((book) => book._id));
+        const readingList = getReadingList();
+        setSavedBookIds(readingList.map((book) => book._id));
+        setReadingListStatuses(
+          Object.fromEntries(
+            readingList.map((book) => [
+              book._id,
+              book.status === 'buy' || book.status === 'borrow' ? book.status : 'available',
+            ]),
+          ),
+        );
         setReadingListError(null);
       } catch (error) {
         console.error('Merkliste konnte nicht geladen werden:', error);
@@ -225,6 +235,11 @@ const Books = () => {
             }`}
           >
             <figure className="book-cover-frame relative aspect-3/4 w-full overflow-hidden bg-slate-100">
+              {readingListStatuses[book._id] && readingListStatuses[book._id] !== 'available' && (
+                <span className="absolute right-3 top-3 z-10 rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white shadow">
+                  {readingListStatuses[book._id] === 'borrow' ? 'Verliehen' : 'Verkauft'}
+                </span>
+              )}
            <img
               src={
                 book.isbn

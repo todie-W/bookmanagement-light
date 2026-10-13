@@ -207,7 +207,7 @@ export default function BookApp() {
                   checked={selectedBookId === book._id}
                   aria-label={`"${book.title}" zum Bearbeiten auswählen`}
                   onChange={() => handleSelectBook(book)}
-                  className="h-5 w-5 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                  className="book-select-checkbox h-5 w-5"
                 />
                 <div>
                   <h3 className="font-semibold text-slate-800">{book.title}</h3>

@@ -6,7 +6,7 @@ import {
   type ReadingListGroup,
 } from "../utils/readingList";
 
-type BookStatus = "buy" | "borrow";
+type BookStatus = "available" | "buy" | "borrow";
 type ReadingListBook = Book & { status: BookStatus };
 
 const isStoredBook = (value: unknown): value is Book =>
@@ -26,7 +26,10 @@ const normalizeStoredBooks = (value: unknown): ReadingListBook[] => {
 
   return value.map((book) => ({
     ...book,
-    status: book.status === "borrow" ? "borrow" : "buy",
+    status:
+      book.status === "buy" || book.status === "borrow"
+        ? book.status
+        : "available",
   }));
 };
 
@@ -41,8 +44,10 @@ const ReadingList = () => {
 
   useEffect(() => {
     let active = true;
+    let latestRequestId = 0;
 
     const loadBooks = async () => {
+      const requestId = ++latestRequestId;
       try {
         const storedBooks = normalizeStoredBooks(
           JSON.parse(localStorage.getItem("readingList") ?? "[]") as unknown,
@@ -59,25 +64,65 @@ const ReadingList = () => {
           setError(null);
         }
 
-        const currentBooks = await Promise.all(
+        const results = await Promise.all(
           storedBooks.map(async (book) => {
-            const response = await fetch(`/api/books/${encodeURIComponent(book._id)}`);//aktualisiert damit den angezeigten Zustand
-            if (!response.ok) {
-              throw new Error(`Buch ${book._id} konnte nicht geladen werden (HTTP ${response.status}).`);
+            try {
+              const response = await fetch(`/api/books/${encodeURIComponent(book._id)}`);
+              if (response.status === 404) {
+                return { book, missing: true, failed: false };
+              }
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+              }
+              const result: { data: Book } = await response.json();
+              return {
+                book: { ...result.data, status: book.status },
+                missing: false,
+                failed: false,
+              };
+            } catch (loadError) {
+              console.error(`Buch ${book._id} konnte nicht vom Server geladen werden:`, loadError);
+              return { book, missing: false, failed: true };
             }
-            const result: { data: Book } = await response.json();
-            return { ...result.data, status: book.status };
           }),
         );
 
-        if (active) {
-          setBooks(currentBooks);
-          setError(null);
-          localStorage.setItem("readingList", JSON.stringify(currentBooks));
+        if (!active || requestId !== latestRequestId) return;
+
+        const currentBooks = results
+          .filter((result) => !result.missing)
+          .map((result) => result.book);
+        const missingBookIds = new Set(
+          results.filter((result) => result.missing).map((result) => result.book._id),
+        );
+        const updatedGroups = storedGroups.map((group) => ({
+          ...group,
+          bookIds: group.bookIds.filter((bookId) => !missingBookIds.has(bookId)),
+        }));
+        localStorage.setItem("readingList", JSON.stringify(currentBooks));
+        if (missingBookIds.size > 0) {
+          localStorage.setItem("readingListGroups", JSON.stringify(updatedGroups));
         }
+//falls ein Buch nicht mehr in der Datenbank vorhanden ist, wird es aus der Merkliste entfernt und die Gruppen werden aktualisiert.
+        setBooks(currentBooks);
+        setGroups(updatedGroups);
+        if (missingBookIds.size > 0) {
+          setSelectedBookIds((selectedIds) =>
+            selectedIds.filter((bookId) => !missingBookIds.has(bookId)),
+          );
+        }
+        setError(
+          results.some((result) => result.failed)
+            ? missingBookIds.size > 0
+              ? "Nicht mehr vorhandene Bücher wurden aus der Merkliste entfernt. Für andere Bücher konnten die aktuellen Daten nicht geladen werden; gespeicherte Daten werden vorübergehend angezeigt."
+              : "Aktuelle Buchdaten konnten nicht vom Server geladen werden. Gespeicherte Daten werden vorübergehend angezeigt."
+            : missingBookIds.size > 0
+              ? "Nicht mehr vorhandene Bücher wurden aus der Merkliste entfernt."
+              : null,
+        );
       } catch (loadError) {
         console.error("Reading List konnte nicht aktualisiert werden:", loadError);
-        if (active) {
+        if (active && requestId === latestRequestId) {
           setError("Aktuelle Buchdaten konnten nicht vom Server geladen werden.");
         }
       }
@@ -90,13 +135,14 @@ const ReadingList = () => {
 // da die Reading List nur aus dem LocalStorage geladen wird und nicht direkt aus der Datenbank.
     return () => {
       active = false;
+      latestRequestId += 1;
       window.removeEventListener("storage", loadBooks);
       window.removeEventListener("readingListUpdated", loadBooks);
     };
   }, []);
 
   const handleStatusChange = (bookId: string, status: string) => {
-    if (status !== "buy" && status !== "borrow") {
+    if (status !== "available" && status !== "buy" && status !== "borrow") {
       const statusError = new Error(`Unbekannter Beschaffungsstatus: ${status}`);
       console.error("Lesestatus konnte nicht gespeichert werden:", statusError);
       setError("Die ausgewählte Option ist ungültig.");
@@ -186,6 +232,13 @@ const ReadingList = () => {
   };
 
   const handleDeleteGroup = (groupId: string) => {
+    const groupToDelete = groups.find((group) => group.id === groupId);
+    if (!groupToDelete) return;
+    if (groupToDelete.bookIds.length > 0) {
+      setError(`Die Gruppe „${groupToDelete.name}“ kann nur gelöscht werden, wenn sie keine Bücher mehr enthält.`);
+      return;
+    }
+
     const updatedGroups = groups.filter((group) => group.id !== groupId);
 
     try {
@@ -315,11 +368,19 @@ const ReadingList = () => {
               .map((bookId) => books.find((book) => book._id === bookId))
               .filter((book): book is ReadingListBook => book !== undefined);
             return (
-              <details key={group.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <summary className="flex cursor-pointer items-baseline justify-between gap-3">
+              <details key={group.id} className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <summary className="flex cursor-pointer items-baseline justify-between gap-3 pr-36">
                   <h2 className="text-lg font-bold text-slate-900">{group.name}</h2>
                   <span className="shrink-0 text-sm text-slate-500">{groupBooks.length} Bücher</span>
                 </summary>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteGroup(group.id)}
+                  aria-label={`Gruppe ${group.name} löschen`}
+                  className="absolute right-5 top-4 rounded-xl border border-red-200 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
+                >
+                  Gruppe löschen
+                </button>
                 <div className="mt-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                     <label htmlFor={`group-name-${group.id}`} className="sr-only">Gruppenname bearbeiten</label>
@@ -339,13 +400,6 @@ const ReadingList = () => {
                       className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                     >
                       Umbenennen
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteGroup(group.id)}
-                      className="rounded-xl border border-red-200 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
-                    >
-                      Gruppe löschen
                     </button>
                   </div>
                   {groupBooks.length === 0 ? (
@@ -398,58 +452,62 @@ const ReadingList = () => {
                             : selectedIds.filter((id) => id !== book._id),
                         )
                       }
-                      className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                      className="book-select-checkbox h-4 w-4"
                     />
                     Für Gruppe auswählen
                   </label>
                 )}
                 <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600">
-                  {book.status === "buy" ? "Kaufen" : "Leihen"}
+                  {book.status === "buy"
+                    ? "Verkauft"
+                    : book.status === "borrow"
+                      ? "Verliehen"
+                      : "Verfügbar"}
                 </p>
                 <h2 className="mt-2 text-lg font-bold text-slate-900">{book.title}</h2>
                 <p className="mt-1 text-sm font-medium text-slate-500">{book.author}</p>
-                <details className="mt-4 rounded-xl border border-slate-200 px-3 py-2">
-                  <summary className="cursor-pointer text-sm font-semibold text-indigo-700">
-                    Details
-                  </summary>
-                  <dl className="mt-3 space-y-2 text-sm">
-                    {book.description && (
-                      <div>
-                        <dt className="font-semibold text-slate-700">Beschreibung</dt>
-                        <dd className="mt-0.5 whitespace-pre-line leading-6 text-slate-600">{book.description}</dd>
-                      </div>
-                    )}
-                    {book.genre && (
-                      <div>
-                        <dt className="font-semibold text-slate-700">Genre</dt>
-                        <dd className="mt-0.5 text-slate-600">{book.genre}</dd>
-                      </div>
-                    )}
-                    {book.year !== undefined && (
-                      <div>
-                        <dt className="font-semibold text-slate-700">Erscheinungsjahr</dt>
-                        <dd className="mt-0.5 text-slate-600">{book.year}</dd>
-                      </div>
-                    )}
-                    {book.pageNumber !== undefined && (
-                      <div>
-                        <dt className="font-semibold text-slate-700">Seitenzahl</dt>
-                        <dd className="mt-0.5 text-slate-600">{book.pageNumber}</dd>
-                      </div>
-                    )}
-                    {book.isbn && (
-                      <div>
-                        <dt className="font-semibold text-slate-700">ISBN</dt>
-                        <dd className="mt-0.5 text-slate-600">{book.isbn}</dd>
-                      </div>
-                    )}
-                    {!book.description && !book.genre && book.year === undefined &&
-                      book.pageNumber === undefined && !book.isbn && (
-                        <p className="text-slate-500">Keine weiteren Details verfügbar.</p>
-                      )}
-                  </dl>
-                </details>
                 <div className="mt-auto pt-5">
+                  <details className="mb-3 rounded-xl border border-slate-200 px-3 py-2">
+                    <summary className="cursor-pointer text-sm font-semibold text-indigo-700">
+                      Details
+                    </summary>
+                    <dl className="mt-3 space-y-2 text-sm">
+                      {book.description && (
+                        <div>
+                          <dt className="font-semibold text-slate-700">Beschreibung</dt>
+                          <dd className="mt-0.5 whitespace-pre-line leading-6 text-slate-600">{book.description}</dd>
+                        </div>
+                      )}
+                      {book.genre && (
+                        <div>
+                          <dt className="font-semibold text-slate-700">Genre</dt>
+                          <dd className="mt-0.5 text-slate-600">{book.genre}</dd>
+                        </div>
+                      )}
+                      {book.year !== undefined && (
+                        <div>
+                          <dt className="font-semibold text-slate-700">Erscheinungsjahr</dt>
+                          <dd className="mt-0.5 text-slate-600">{book.year}</dd>
+                        </div>
+                      )}
+                      {book.pageNumber !== undefined && (
+                        <div>
+                          <dt className="font-semibold text-slate-700">Seitenzahl</dt>
+                          <dd className="mt-0.5 text-slate-600">{book.pageNumber}</dd>
+                        </div>
+                      )}
+                      {book.isbn && (
+                        <div>
+                          <dt className="font-semibold text-slate-700">ISBN</dt>
+                          <dd className="mt-0.5 text-slate-600">{book.isbn}</dd>
+                        </div>
+                      )}
+                      {!book.description && !book.genre && book.year === undefined &&
+                        book.pageNumber === undefined && !book.isbn && (
+                          <p className="text-slate-500">Keine weiteren Details verfügbar.</p>
+                        )}
+                    </dl>
+                  </details>
                   <select
                     value={book.status}
                     aria-label={`Option für ${book.title}`}
@@ -458,6 +516,7 @@ const ReadingList = () => {
                       handleStatusChange(book._id, event.target.value)
                     }
                   >
+                    <option value="available">Verfügbar</option>
                     <option value="buy">Kaufen</option>
                     <option value="borrow">Leihen</option>
                   </select>

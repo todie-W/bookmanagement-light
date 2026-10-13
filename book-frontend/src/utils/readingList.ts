@@ -53,7 +53,7 @@ export const toggleBookInReadingList = (book: Book): boolean => {
   const isSaved = readingList.some((item) => item._id === book._id);
   const updatedReadingList = isSaved
     ? readingList.filter((item) => item._id !== book._id)
-    : [...readingList, { ...book, status: "buy" }];
+    : [...readingList, { ...book, status: "available" }];
 
   localStorage.setItem("readingList", JSON.stringify(updatedReadingList));
   window.dispatchEvent(new Event("readingListUpdated"));

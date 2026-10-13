@@ -146,7 +146,7 @@ export default function DeleteBook() {
                     checked={selectedBookId === book._id}
                     aria-label={`„${book.title}“ zum Löschen auswählen`}
                     onChange={() => setSelectedBookId(selectedBookId === book._id ? null : book._id)}
-                    className="h-5 w-5 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="book-select-checkbox h-5 w-5"
                   />
                   <span>
                     <span className="block font-semibold text-slate-800">{book.title}</span>
