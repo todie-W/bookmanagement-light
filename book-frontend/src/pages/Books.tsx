@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import SearchBook from './SearchBook';
 import type { Book } from '../types/Book';
-import { getReadingList, toggleBookInReadingList } from '../utils/readingList';
+import {
+  getReadingList,
+  getReadingListGroups,
+  toggleBookInReadingList,
+  type ReadingListGroup,
+} from '../utils/readingList';
 
 const BOOKS_PER_PAGE = 9;
 
@@ -11,6 +16,8 @@ const Books = () => {
   const [bookLoadError, setBookLoadError] = useState<string | null>(null);
   const [savedBookIds, setSavedBookIds] = useState<string[]>([]);
   const [readingListError, setReadingListError] = useState<string | null>(null);
+  const [readingListGroups, setReadingListGroups] = useState<ReadingListGroup[]>([]);
+  const [groupsError, setGroupsError] = useState<string | null>(null);
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -81,12 +88,27 @@ const Books = () => {
       }
     };
 
+    const syncReadingListGroups = () => {
+      try {
+        setReadingListGroups(getReadingListGroups());
+        setGroupsError(null);
+      } catch (error) {
+        console.error('Merkliste-Gruppen konnten nicht geladen werden:', error);
+        setGroupsError('Die Büchergruppen konnten nicht geladen werden.');
+      }
+    };
+
     syncReadingList();
+    syncReadingListGroups();
     window.addEventListener('storage', syncReadingList);
     window.addEventListener('readingListUpdated', syncReadingList);
+    window.addEventListener('storage', syncReadingListGroups);
+    window.addEventListener('readingListUpdated', syncReadingListGroups);
     return () => {
       window.removeEventListener('storage', syncReadingList);
       window.removeEventListener('readingListUpdated', syncReadingList);
+      window.removeEventListener('storage', syncReadingListGroups);
+      window.removeEventListener('readingListUpdated', syncReadingListGroups);
     };
   }, []);
 
@@ -146,6 +168,43 @@ const Books = () => {
           </button>
         </div>
       </div>
+      {groupsError && (
+        <p role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {groupsError}
+        </p>
+      )}
+      {readingListGroups.length > 0 && (
+        <section aria-label="Deine Büchergruppen" className="mb-8 space-y-4">
+          {readingListGroups.map((group) => {
+            const groupBooks = group.bookIds
+              .map((bookId) => books?.find((book) => book._id === bookId))
+              .filter((book): book is Book => book !== undefined);
+
+            return (
+              <details key={group.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <summary className="flex cursor-pointer items-baseline justify-between gap-3">
+                  <h2 className="text-lg font-bold text-slate-900">{group.name}</h2>
+                  <span className="shrink-0 text-sm text-slate-500">{groupBooks.length} Bücher</span>
+                </summary>
+                <div className="mt-3">
+                  {groupBooks.length === 0 ? (
+                    <p className="text-sm text-slate-500">Noch keine Bücher in dieser Gruppe.</p>
+                  ) : (
+                    <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                      {groupBooks.map((book) => (
+                        <li key={book._id} className="rounded-xl bg-slate-50 px-3 py-2">
+                          <p className="text-sm font-semibold text-slate-800">{book.title}</p>
+                          <p className="mt-0.5 text-xs text-slate-500">{book.author}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </details>
+            );
+          })}
+        </section>
+      )}
       {bookLoadError && (
         <p role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {bookLoadError}
@@ -215,6 +274,47 @@ const Books = () => {
               <h2 className="text-lg font-bold text-slate-900">{book.title}</h2>
               <h3 className="mt-1 text-sm font-medium text-slate-500">{book.author}</h3>
               <p className="mt-4 line-clamp-3 flex-1 text-sm leading-6 text-slate-600">{book.description}</p>
+              <details className="mt-4 rounded-xl border border-slate-200 px-3 py-2">
+                <summary className="cursor-pointer text-sm font-semibold text-indigo-700">
+                  Details
+                </summary>
+                <dl className="mt-3 space-y-2 text-sm">
+                  {book.description && (
+                    <div>
+                      <dt className="font-semibold text-slate-700">Beschreibung</dt>
+                      <dd className="mt-0.5 whitespace-pre-line leading-6 text-slate-600">{book.description}</dd>
+                    </div>
+                  )}
+                  {book.genre && (
+                    <div>
+                      <dt className="font-semibold text-slate-700">Genre</dt>
+                      <dd className="mt-0.5 text-slate-600">{book.genre}</dd>
+                    </div>
+                  )}
+                  {book.year !== undefined && (
+                    <div>
+                      <dt className="font-semibold text-slate-700">Erscheinungsjahr</dt>
+                      <dd className="mt-0.5 text-slate-600">{book.year}</dd>
+                    </div>
+                  )}
+                  {book.pageNumber !== undefined && (
+                    <div>
+                      <dt className="font-semibold text-slate-700">Seitenzahl</dt>
+                      <dd className="mt-0.5 text-slate-600">{book.pageNumber}</dd>
+                    </div>
+                  )}
+                  {book.isbn && (
+                    <div>
+                      <dt className="font-semibold text-slate-700">ISBN</dt>
+                      <dd className="mt-0.5 text-slate-600">{book.isbn}</dd>
+                    </div>
+                  )}
+                  {!book.description && !book.genre && book.year === undefined &&
+                    book.pageNumber === undefined && !book.isbn && (
+                      <p className="text-slate-500">Keine weiteren Details verfügbar.</p>
+                    )}
+                </dl>
+              </details>
               <div className="mt-5">
                 <button
                   type="button"
@@ -230,6 +330,31 @@ const Books = () => {
           </article>
         ))}
       </div>
+      {visibleBooks.length === BOOKS_PER_PAGE && (
+        <div className="mt-8 flex justify-end">
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-500">Seite {page} von {pageCount}</span>
+            <button
+              type="button"
+              aria-label="Vorherige Seite"
+              onClick={() => setPage((prev) => (prev === 1 ? pageCount : prev - 1))}
+              className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100"
+              disabled={pageCount <= 1}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              aria-label="Nächste Seite"
+              onClick={() => setPage((prev) => (prev === pageCount ? 1 : prev + 1))}
+              className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={pageCount <= 1}
+            >
+              ›
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

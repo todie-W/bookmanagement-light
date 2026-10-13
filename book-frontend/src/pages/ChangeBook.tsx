@@ -1,4 +1,5 @@
 import React, { useState, useEffect, type SubmitEvent } from 'react';
+import { getReadingList } from '../utils/readingList';
 //IBook?   Buchauswahl, die in der DB geändert werden soll, ausführen. Die Buchliste wird aus der DB geladen und in der linken Spalte angezeigt. In der rechten Spalte kann das ausgewählte Buch geändert werden.
 interface IBook {
   _id?: string;
@@ -35,6 +36,9 @@ export default function BookApp() {
   const API_URL = '/api/books';
 
   const fetchBooks = async (): Promise<IBook[]> => {
+    const savedBookIds = new Set(getReadingList().map((book) => book._id));
+    if (savedBookIds.size === 0) return [];
+
     const allBooks: IBook[] = [];
     let page = 1;
 
@@ -51,7 +55,7 @@ export default function BookApp() {
 
       allBooks.push(...result.data);
       if (result.data.length < BOOKS_PER_PAGE) {
-        return allBooks;
+        return allBooks.filter((book) => book._id && savedBookIds.has(book._id));
       }
       page += 1;
     }
@@ -81,6 +85,7 @@ export default function BookApp() {
 
   // Buch auswählen über Checkbox / Häkchen
   const handleSelectBook = (book: IBook) => {
+    setMessage('');
     if (book._id === selectedBookId) {
       // Wenn das gleiche Buch nochmal geklickt wird: Abwählen
       setSelectedBookId(null);
@@ -100,8 +105,9 @@ export default function BookApp() {
   };
 
   // Formular-Eingaben verarbeiten
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    setMessage('');
     setFormData(prev => ({
       ...prev,
       [name]: name === 'year' ? parseInt(value) || 0 : value
@@ -186,7 +192,9 @@ export default function BookApp() {
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="mb-4 text-lg font-bold text-slate-900">Deine Bücher</h2>
         <div className="space-y-3">
-          {books.map(book => (
+          {books.length === 0 ? (
+            <p className="text-sm text-slate-500">Keine Bücher in der Merkliste.</p>
+          ) : books.map(book => (
             <div 
               key={book._id} 
               className={`flex items-center justify-between gap-3 rounded-xl border p-4 transition-colors ${
@@ -219,9 +227,9 @@ export default function BookApp() {
           {selectedBookId ? 'Buch bearbeiten' : 'Wähle ein Buch zum Bearbeiten'}
         </h2>
 
-        {message && (
+        {(message || selectedBookId) && (
           <div role="status" className="mb-5 rounded-xl border border-indigo-100 bg-indigo-50 p-3 text-sm font-medium text-indigo-700">
-            {message}
+            {message || 'Inhalte ändern.'}
           </div>
         )}
 
@@ -270,7 +278,7 @@ export default function BookApp() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-slate-700">Erscheinungsjahr</label>
+            <label className="block text-sm font-medium text-slate-700">Seitenzahl</label>
             <input
               type="number"
               name="pageNumber"
@@ -308,26 +316,45 @@ export default function BookApp() {
             <label htmlFor="genre" className="block text-sm font-medium text-slate-700">
               Genre
             </label>
-            <input
+            <select
               id="genre"
-              type="text"
               name="genre"
               value={formData.genre}
               onChange={handleInputChange}
               disabled={!selectedBookId}
-              placeholder="z. B. Fantasy, Roman"
-              list="change-book-genre-options"
               className="mt-1 block w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 disabled:bg-slate-100"
-            />
-            <datalist id="change-book-genre-options">
-            <option value="Fantasy">Fantasy</option>
-            <option value="Science Fiction">Science Fiction</option>
-            <option value="Romance">Romance</option>
-              <option value="Kinderbuch" />
-              <option value="Roman" />
-              <option value="Drama" />
-            </datalist>
-            <p className="mt-1 text-xs text-slate-500">Mehrere Genres mit Komma trennen.</p>
+            >
+              <option value="">Bitte wählen</option>
+              {formData.genre &&
+                ![
+                  'Dokumentation',
+                  'Drama',
+                  'Fachbuch',
+                  'Fantasy',
+                  'Kinderbuch',
+                  'Novelle',
+                  'Reihe',
+                  'Roman',
+                  'Romance',
+                  'Science Fiction',
+                  'Thriller',
+                  'Wörterbuch',
+                ].includes(formData.genre) && (
+                  <option value={formData.genre}>{formData.genre}</option>
+                )}
+              <option value="Dokumentation">Dokumentation</option>
+              <option value="Drama">Drama</option>
+              <option value="Fachbuch">Fachbuch</option>
+              <option value="Fantasy">Fantasy</option>
+              <option value="Kinderbuch">Kinderbuch</option>
+              <option value="Novelle">Novelle</option>
+              <option value="Reihe">Reihe</option>
+              <option value="Roman">Roman</option>
+              <option value="Romance">Romance</option>
+              <option value="Science Fiction">Science Fiction</option>
+              <option value="Thriller">Thriller</option>
+              <option value="Wörterbuch">Wörterbuch</option>
+            </select>
           </div>
 
           <button

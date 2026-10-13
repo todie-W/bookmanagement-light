@@ -3,6 +3,7 @@ import type { Book } from '../types/Book';
 import { getReadingList } from '../utils/readingList';
 
 const API_URL = '/api/books';
+const BOOKS_PER_PAGE = 10;
 
 export default function DeleteBook() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -14,15 +15,34 @@ export default function DeleteBook() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch(API_URL);
-        const result = (await response.json()) as { data?: Book[]; message?: string };
-        if (!response.ok) {
-          throw new Error(result.message ?? `Bücher konnten nicht geladen werden (HTTP ${response.status}).`);
+        const buyBookIds = new Set(
+          getReadingList()
+            .filter((book) => book.status === 'buy')
+            .map((book) => book._id),
+        );
+        if (buyBookIds.size === 0) {
+          setBooks([]);
+          return;
         }
-        if (!Array.isArray(result.data)) {
-          throw new Error('Die Buchliste wurde in einem ungültigen Format zurückgegeben.');
+
+        const allBooks: Book[] = [];
+        let currentPage = 1;
+
+        while (true) {
+          const response = await fetch(`${API_URL}?page=${currentPage}&limit=${BOOKS_PER_PAGE}`);
+          const result = (await response.json()) as { data?: Book[]; message?: string };
+          if (!response.ok) {
+            throw new Error(result.message ?? `Bücher konnten nicht geladen werden (HTTP ${response.status}).`);
+          }
+          if (!Array.isArray(result.data)) {
+            throw new Error('Die Buchliste wurde in einem ungültigen Format zurückgegeben.');
+          }
+          allBooks.push(...result.data);
+          if (result.data.length < BOOKS_PER_PAGE) break;
+          currentPage += 1;
         }
-        setBooks(result.data);
+
+        setBooks(allBooks.filter((book) => buyBookIds.has(book._id)));
       } catch (error) {
         console.error('Bücher konnten nicht geladen werden:', error);
         setMessage({
@@ -87,7 +107,7 @@ export default function DeleteBook() {
       <div className="mb-8">
         <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-indigo-600">Sammlung verwalten</p>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Buch löschen</h1>
-        <p className="mt-2 text-slate-600">Wähle ein Buch aus der Liste aus, um es aus der Datenbank zu löschen.</p>
+        <p className="mt-2 text-slate-600">Wähle ein mit „Kaufen“ markiertes Buch aus der Merkliste aus, um es aus der Datenbank zu löschen.</p>
       </div>
 
       {message && (
@@ -108,7 +128,7 @@ export default function DeleteBook() {
         {isLoading ? (
           <p className="text-sm text-slate-500">Bücher werden geladen …</p>
         ) : books.length === 0 ? (
-          <p className="text-sm text-slate-500">Es sind keine Bücher vorhanden.</p>
+          <p className="text-sm text-slate-500">Keine mit „Kaufen“ markierten Bücher in der Merkliste.</p>
         ) : (
           <div className="space-y-3">
             {books.map((book) => (
@@ -133,11 +153,16 @@ export default function DeleteBook() {
                     <span className="block text-sm text-slate-500">von {book.author}</span>
                   </span>
                 </span>
-                {book.year !== undefined && (
-                  <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
-                    {book.year}
+                <span className="flex shrink-0 flex-col items-end gap-2">
+                  <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+                    Verkauft
                   </span>
-                )}
+                  {book.year !== undefined && (
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                      {book.year}
+                    </span>
+                  )}
+                </span>
               </label>
             ))}
           </div>

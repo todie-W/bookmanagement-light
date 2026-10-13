@@ -180,13 +180,18 @@ export const BookForm: React.FC = () => {
             className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
           >
             <option value="">Bitte wählen</option>
-            <option value="Fantasy">Fantasy</option>
-            <option value="Science Fiction">Science Fiction</option>
-            <option value="Romance">Romance</option>
-            <option value="Thriller">Thriller</option>
-            <option value="Kinderbuch">Kinderbuch</option>
-            <option value="Roman">Roman</option>
+            <option value="Dokumentation">Dokumentation</option>
             <option value="Drama">Drama</option>
+            <option value="Fachbuch">Fachbuch</option>
+            <option value="Fantasy">Fantasy</option>
+            <option value="Kinderbuch">Kinderbuch</option>
+            <option value="Novelle">Novelle</option>
+            <option value="Reihe">Reihe</option>
+            <option value="Roman">Roman</option>
+            <option value="Romance">Romance</option>
+            <option value="Science Fiction">Science Fiction</option>
+            <option value="Thriller">Thriller</option>
+            <option value="Wörterbuch">Wörterbuch</option>
           </select>
         </div>
 
