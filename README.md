@@ -8,6 +8,13 @@ Die .envi Variable ist MONGO_URI.
 Backend: http://localhost:3000/
 Frontend: http://localhost:5173/
 
+Beim Einrichten in Kosole jeweils fürs Backend und Frontend:
+
+....js
+npm i
+npm run dev
+....
+
 
 Die Datenstruktur der benötigten Tabelle "books" in der Datenbank (hier: bookstore):
 
@@ -24,13 +31,10 @@ Die Datenstruktur der benötigten Tabelle "books" in der Datenbank (hier: bookst
     'Fachbuch'
   ],
   __v: NumberInt('0')
-}
+}...
 
 
 
 
-Beim Einrichten in Kosole jeweils fürs Backend und Frontend:
-npm i
-npm run dev
 
 
