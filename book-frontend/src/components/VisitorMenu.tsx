@@ -36,23 +36,16 @@ const UserMenu = () => {
                 Books
               </Link>
             </li>
-            {/* {user && user.roles.includes('books.edit') && ( */}
-                {/* <Link to={'books.edit'}>Buch editieren</Link> */}
-                 {/* {user && user.roles.includes('books.edit') && ( */}
-                 {/* {('books.edit') && (  */}
-              
-          
+
+           
               <li>
                 <Link to={'/reading-list'}>Reading List</Link>
               </li>
               <li>
-                {/* <Link to={'http://localhost:5173/add-book'}>Buch hinzufügen</Link> */}
+          
                 <Link to={API_URL}>Buch hinzufügen</Link>
               </li>
-              {/* )}; */}
-            {/* <li>
-              <button onClick={logout}>Logout</button>
-            </li> */}
+           
           </ul>
           <ul
             tabIndex={0}
@@ -60,7 +53,7 @@ const UserMenu = () => {
           >
             <li>
               <Link to={'/change-book'}>Buch ändern</Link>
-              {/* <Link to={'http://localhost:3000/change-book'}>Buch ändern</Link> */}
+             
             </li>
           </ul>
         </div>

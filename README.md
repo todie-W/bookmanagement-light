@@ -1,14 +1,14 @@
 # Buchverwaltung (bookmanagement-light)
 
 ## Beschreibung
-Ein Eigennutz ist der Anlass dieser Web-Applikation. Mit oder ohne Interessenten. Bücher werden in einer Sammelliste dem Betrachter zur Verfügung gestellt. In einer Merkliste werden sie verwaltet: in Gruppen aufgeteilt, als Verkauft oder Verliehen gekennzeichnet, zur Änderung und zum Löschen weitergereicht werden.
+Ein Eigennutz ist der Anlass dieser Web-Applikation. Mit oder ohne Interessenten. Bücher werden in einer Sammelliste dem Betrachter zur Verfügung gestellt. In einer Merkliste werden sie verwaltet: in Gruppen aufgeteilt, als Verkauft oder Verliehen gekennzeichnet, zur Änderung und zum Löschen weitergereicht.
 
 Die .envi Variable ist MONGO_URI.
 
 Backend: http://localhost:3000/
 Frontend: http://localhost:5173/
 
-Beim Einrichten in Kosole jeweils fürs Backend und Frontend:
+Beim Einrichten in Konsole jeweils fürs Backend und Frontend:
 
 npm i
 

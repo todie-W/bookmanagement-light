@@ -234,11 +234,7 @@ const ReadingList = () => {
   const handleDeleteGroup = (groupId: string) => {
     const groupToDelete = groups.find((group) => group.id === groupId);
     if (!groupToDelete) return;
-    if (groupToDelete.bookIds.length > 0) {
-      setError(`Die Gruppe „${groupToDelete.name}“ kann nur gelöscht werden, wenn sie keine Bücher mehr enthält.`);
-      return;
-    }
-
+    
     const updatedGroups = groups.filter((group) => group.id !== groupId);
 
     try {

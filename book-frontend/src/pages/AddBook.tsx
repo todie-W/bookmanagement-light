@@ -1,8 +1,8 @@
 import React, { useState, type ChangeEvent, type FormEvent } from 'react';
 
 type BookFormData = {
-  author: string;  
-  title: string;
+  author: string; 
+  title: string; 
   description: string;
   pageNumber: number;
   year: number;
@@ -12,8 +12,8 @@ type BookFormData = {
 
 export const BookForm: React.FC = () => {
   const initialFormState: BookFormData = {
-    title: '',
     author: '',
+    title: '',
     description: '',
     pageNumber: 0,
     year: new Date().getFullYear(),
@@ -59,7 +59,8 @@ export const BookForm: React.FC = () => {
         throw new Error(data.message || 'Etwas ist schiefgelaufen.');
       }
 
-      setMessage({ text: `Buch "${data.title}" erfolgreich hinzugefügt!`, isError: false });
+      //setMessage({ text: `Buch "${data.title}" erfolgreich hinzugefügt!`, isError: false });//erzeugt "undefined"
+      setMessage({ text: `Buch "${formData.title}" erfolgreich hinzugefügt!`, isError: false });
       setFormData(initialFormState); // Formular zurücksetzen
     } catch (error) {
       setMessage({
